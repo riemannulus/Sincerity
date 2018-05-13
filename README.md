@@ -1,6 +1,6 @@
 # Sincerity
 
-Sincerity is a application for raspberry pi GPIO controller.
+Sincerity is an application for raspberry pi GPIO controller.
 
 ## Information
 
