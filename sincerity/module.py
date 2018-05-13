@@ -1,5 +1,4 @@
 import audioop
-
 import pyaudio
 
 class PyAudioInput():
@@ -22,13 +21,12 @@ class PyAudioInput():
     def stop(self):
         self.stream.stop_stream()
         self.stream.close()
-        self.p.terminate()
 
 class PyAudioData():
 
-    def __init__(self, format=16, channels, rate, input=True, chunk):
+    def __init__(self, format, channels, rate, chunk, input=True):
         self.p = pyaudio.PyAudio()
-        if formant == 8:
+        if format == 8:
             self.format=pyaudio.paInt8
         elif format == 16:
             self.format=pyaudio.paInt16
@@ -43,4 +41,4 @@ class PyAudioData():
             self.input=True
         else:
             self.output=True
-        self.frames_per_buffer=chunk
+        self.chunk=chunk

@@ -1,33 +1,38 @@
-from .module import PyAudioInput, PyAudioData
-import .controller as cl
+import pyaudio
+import audioop
+
+from module import PyAudioInput, PyAudioData
+from controller import DataGetter, Process
 
 
 def main():
-    audio_data = PyAudioData(format=16, channels=1, rate=44100, chunk=1024)
 
-    audio_input = PyAudioInput(audio_data)
+    audio_data = PyAudioData(format=16, channels=1, rate=44100, chunk=1024)
+    data_getter = DataGetter(audio_data)
+
+    buf1_log=open('buf1.log', 'w')
+    buf2_log=open('buf2.log', 'w')
+    buf3_log=open('buf3.log', 'w')
 
     print('Recoding buf 1 until 3 sec ...')
-    buf1 = get_signal_buffer(3)
+    buf1 = data_getter.get_signal_buffer(3)
     print('Recoding buf 2 until 3 sec ...')
-    buf2 = get_signal_buffer(3)
+    buf2 = data_getter.get_signal_buffer(3)
     print('Recoding buf 3 until 3 sec ...')
-    buf3 = get_signal_buffer(3)
+    buf3 = data_getter.get_signal_buffer(3)
 
     print('processing signal...')
 
-    max_signal, min_signal = cl.process_signal(buf1, buf2, buf3)
+    for b in buf1:
+        buf1_log.write(' '.join(str(e) for e in b) + '\n')
+    for b in buf2:
+        buf2_log.write(' '.join(str(e) for e in b) + '\n')
+    for b in buf2:
+        buf3_log.write(' '.join(str(e) for e in b) + '\n')
 
-    print('max signal result:')
-    for signal in max_signal:
-        max_log.write(' '.join(str(e) for e in signal) + '\n')
-
-    print('min signal result:')
-    for signal in min_signal:
-        min_log.write(' '.join(str(e) for e in signal) + '\n')
-
-    min_log.close()
-    max_log.close()
+    buf1_log.close()
+    buf2_log.close()
+    buf3_log.close()
 
 if __name__ == '__main__':
     main()
