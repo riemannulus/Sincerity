@@ -1,8 +1,8 @@
 import pyaudio
 import audioop
 
-from module import PyAudioInput, PyAudioData
-from controller import DataGetter, Process
+from module import *
+from controller import *
 
 
 def main():
