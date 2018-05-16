@@ -34,10 +34,11 @@ def main():
         for b in max_buf:
             max_log.write(' '.join(str(e) for e in b) + '\n')
 
-            for b in min_buf:
-                min_log.write(' '.join(str(e) for e in b) + '\n')
-                max_log.close()
-                min_log.close()
+        for b in min_buf:
+            min_log.write(' '.join(str(e) for e in b) + '\n')
+
+        max_log.close()
+        min_log.close()
 
         print('Saving complelete!')
 

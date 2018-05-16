@@ -66,17 +66,21 @@ def get_lowest_volume(buf1, buf2, buf3):
 # and reprocessing from backword
 def process_signal(buf, pivot):
 
-    process_buf = buf[:]
-    for signal in buf:
-        if signal[1] < pivot:
-            process_buf.remove(signal)
-        else:
-            break
+    try:
+        process_buf = buf[:]
+        for signal in buf:
+            if signal[1] < pivot:
+                process_buf.remove(signal)
+            else:
+                break
 
-    for signal in buf[::-1]:
-        if signal[1] < pivot:
-            process_buf.remove(signal)
-        else:
-            break
+        for signal in buf[::-1]:
+            if signal[1] < pivot:
+                process_buf.remove(signal)
+            else:
+                break
+
+    except ValueError:
+        pass
 
     return process_buf
