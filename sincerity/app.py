@@ -9,30 +9,47 @@ def main():
 
     audio_data = PyAudioData(format=16, channels=1, rate=44100, chunk=1024)
     data_getter = DataGetter(audio_data)
+    PIVOT_VOLUME = 10000000
 
-    buf1_log=open('buf1.log', 'w')
-    buf2_log=open('buf2.log', 'w')
-    buf3_log=open('buf3.log', 'w')
+    def write_data():
 
-    print('Recoding buf 1 until 3 sec ...')
-    buf1 = data_getter.get_signal_buffer(3)
-    print('Recoding buf 2 until 3 sec ...')
-    buf2 = data_getter.get_signal_buffer(3)
-    print('Recoding buf 3 until 3 sec ...')
-    buf3 = data_getter.get_signal_buffer(3)
+        print('Recoding buf 1 until 3 sec ...')
+        buf1 = data_getter.get_signal_buffer(3)
+        print('Recoding buf 2 until 3 sec ...')
+        buf2 = data_getter.get_signal_buffer(3)
+        print('Recoding buf 3 until 3 sec ...')
+        buf3 = data_getter.get_signal_buffer(3)
 
-    print('processing signal...')
+        print('processing signal...')
 
-    for b in buf1:
-        buf1_log.write(' '.join(str(e) for e in b) + '\n')
-    for b in buf2:
-        buf2_log.write(' '.join(str(e) for e in b) + '\n')
-    for b in buf2:
-        buf3_log.write(' '.join(str(e) for e in b) + '\n')
+        buf1 = process_signal(buf1, PIVOT_VOLUME)
+        buf2 = process_signal(buf2, PIVOT_VOLUME)
+        buf3 = process_signal(buf3, PIVOT_VOLUME)
 
-    buf1_log.close()
-    buf2_log.close()
-    buf3_log.close()
+        print('processing completed!')
+
+        max_buf = get_highest_volume(buf1, buf2, buf3)
+        min_buf = get_lowest_volume(buf1, buf2, buf3)
+
+        for b in max_buf:
+            max_log.write(' '.join(str(e) for e in b) + '\n')
+
+            for b in min_buf:
+                min_log.write(' '.join(str(e) for e in b) + '\n')
+                max_log.close()
+                min_log.close()
+
+        print('Saving complelete!')
+
+    try:
+        max_log=open('max_buffer.log', 'r')
+        min_log=open('min_buffer.log', 'r')
+        print('open complete!')
+
+    except IOError:
+        max_log=open('max_buffer.log', 'w')
+        min_log=open('min_buffer.log', 'w')
+        write_data()
 
 if __name__ == '__main__':
     main()

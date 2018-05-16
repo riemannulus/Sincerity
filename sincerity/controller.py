@@ -8,6 +8,7 @@ from numpy.fft import fft
 
 from module import *
 
+
 class DataGetter():
 
     def __init__(self, audio_data):
@@ -27,7 +28,6 @@ class DataGetter():
 
             spectrum = get_spectrum(samples)
             freq = get_peak_frequency(spectrum, self.rate)
-            print(freq)
 
             now = time.time()
             buffer.append(freq)
@@ -35,4 +35,48 @@ class DataGetter():
                 input.stop()
                 return buffer
 
+def get_highest_volume(buf1, buf2, buf3):
 
+    def compare(s1, s2):
+        if s1[1] > s2[1]:
+            return s1
+        else:
+            return s2
+
+    signal_temp = list(map(compare, buf1, buf2))
+
+    return list(map(compare, signal_temp, buf3))
+
+
+def get_lowest_volume(buf1, buf2, buf3):
+
+    def compare(s1, s2):
+        if s1[1] > s2[1]:
+            return s2
+        else:
+            return s1
+
+    signal_temp = list(map(compare, buf1, buf2))
+
+    return list(map(compare, signal_temp, buf3))
+
+# Compare volume power by pivot
+# if is lower then pivot, remove it
+# if is higher then pivot, stop loop
+# and reprocessing from backword
+def process_signal(buf, pivot):
+
+    process_buf = buf[:]
+    for signal in buf:
+        if signal[1] < pivot:
+            process_buf.remove(signal)
+        else:
+            break
+
+    for signal in buf[::-1]:
+        if signal[1] < pivot:
+            process_buf.remove(signal)
+        else:
+            break
+
+    return process_buf
