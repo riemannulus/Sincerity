@@ -10,9 +10,8 @@ def main():
     audio_data = PyAudioData(format=16, channels=1, rate=44100, chunk=1024)
     data_getter = DataGetter(audio_data)
 
-    buf1_log=open('buf1.log', 'w')
-    buf2_log=open('buf2.log', 'w')
-    buf3_log=open('buf3.log', 'w')
+    max_log=open('max_buffer.log', 'w')
+    min_log=open('min_buffer.log', 'w')
 
     print('Recoding buf 1 until 3 sec ...')
     buf1 = data_getter.get_signal_buffer(3)
@@ -23,16 +22,28 @@ def main():
 
     print('processing signal...')
 
-    for b in buf1:
-        buf1_log.write(' '.join(str(e) for e in b) + '\n')
-    for b in buf2:
-        buf2_log.write(' '.join(str(e) for e in b) + '\n')
-    for b in buf2:
-        buf3_log.write(' '.join(str(e) for e in b) + '\n')
+    max_buf = get_higest_volume(buf1, buf2, buf3)
+    min_buf = get lowest_volume(buf1, buf2, buf3)
 
-    buf1_log.close()
-    buf2_log.close()
-    buf3_log.close()
+    print("""
+          processing signal complete!
+          """)
+
+    print("""
+          Saving buffer log
+          """)
+
+    for b in max_buf:
+        max_log.write(' '.join(str(e) for e in b) + '\n')
+    for b in min_buf:
+        min_log.write(' '.join(str(e) for e in b) + '\n')
+
+    max_log.close()
+    min_log.close()
+
+    print("""
+          Saving complelete! program exterm
+          """)
 
 if __name__ == '__main__':
     main()
