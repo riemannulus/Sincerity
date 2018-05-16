@@ -63,6 +63,7 @@ def get_lowest_volume(buf1, buf2, buf3):
 # Compare volume power by pivot
 # if is lower then pivot, remove it
 # if is higher then pivot, stop loop
+# and reprocessing from backword
 def process_signal(buf, pivot):
 
     process_buf = buf[:]
@@ -72,8 +73,10 @@ def process_signal(buf, pivot):
         else:
             break
 
-    for signal in buf.reverse():
+    for signal in buf[::-1]:
         if signal[1] < pivot:
             process_buf.remove(signal)
         else:
             break
+
+    return process_buf
