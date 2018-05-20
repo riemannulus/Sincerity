@@ -106,3 +106,4 @@ venv.bak/
 
 # Ignore log file
 *.log
+*.sh

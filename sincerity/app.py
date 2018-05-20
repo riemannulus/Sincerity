@@ -7,11 +7,13 @@ from controller import *
 
 def main():
 
+    PIVOT_VOLUME = 10000000
+    max_usr_buf = []
+    min_usr_buf = []
     audio_data = PyAudioData(format=16, channels=1, rate=44100, chunk=1024)
     data_getter = DataGetter(audio_data)
-    PIVOT_VOLUME = 10000000
 
-    def write_data():
+    def get_data():
 
         print('Recoding buf 1 until 3 sec ...')
         buf1 = data_getter.get_signal_buffer(3)
@@ -37,10 +39,20 @@ def main():
         for b in min_buf:
             min_log.write(' '.join(str(e) for e in b) + '\n')
 
-        max_log.close()
-        min_log.close()
-
         print('Saving complelete!')
+
+    def set_data():
+
+        print('Set sound data from files')
+        for line in max_log.readlines():
+            strip_line = line.strip()
+            max_usr_buf.append(strip_line.split(' '))
+
+        for line in min_log.readlines():
+            strip_line = line.strip()
+            min_usr_buf.append(strip_line.split(' '))
+
+        print(min_usr_buf)
 
     try:
         max_log=open('max_buffer.log', 'r')
@@ -50,7 +62,17 @@ def main():
     except IOError:
         max_log=open('max_buffer.log', 'w')
         min_log=open('min_buffer.log', 'w')
-        write_data()
+
+        get_data()
+
+        max_log.close()
+        min_log.close()
+        max_log=open('max_buffer.log', 'r')
+        min_log=open('min_buffer.log', 'r')
+
+    set_data()
+    max_log.close()
+    min_log.close()
 
 if __name__ == '__main__':
     main()
