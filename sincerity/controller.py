@@ -35,10 +35,10 @@ class DataGetter():
                 input.stop()
                 return buffer
 
-def get_highest_volume(buf1, buf2, buf3):
+def get_highest_prequency(buf1, buf2, buf3):
 
     def compare(s1, s2):
-        if s1[1] > s2[1]:
+        if s1[0] > s2[0]:
             return s1
         else:
             return s2
@@ -48,10 +48,10 @@ def get_highest_volume(buf1, buf2, buf3):
     return list(map(compare, signal_temp, buf3))
 
 
-def get_lowest_volume(buf1, buf2, buf3):
+def get_lowest_prequency(buf1, buf2, buf3):
 
     def compare(s1, s2):
-        if s1[1] > s2[1]:
+        if s1[0] > s2[0]:
             return s2
         else:
             return s1
