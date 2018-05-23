@@ -7,7 +7,7 @@ from controller import *
 
 def main():
 
-    PIVOT_VOLUME = 10000000
+    PIVOT_VOLUME = 7000000
     max_usr_buf = []
     min_usr_buf = []
     audio_data = PyAudioData(format=16, channels=1, rate=44100, chunk=1024)
@@ -45,12 +45,12 @@ def main():
 
         print('Set sound data from files')
         for line in max_log.readlines():
-            strip_line = line.strip()
-            max_usr_buf.append(strip_line.split(' '))
+            strip_line = line.strip().split(' ')
+            max_usr_buf.append(tuple(map(float, strip_line)))
 
         for line in min_log.readlines():
-            strip_line = line.strip()
-            min_usr_buf.append(strip_line.split(' '))
+            strip_line = line.strip().split(' ')
+            min_usr_buf.append(tuple(map(float, strip_line)))
 
         print(min_usr_buf)
 
@@ -73,6 +73,25 @@ def main():
     set_data()
     max_log.close()
     min_log.close()
+
+    while(True):
+        is_scope = False
+        count = 0
+        signal = data_getter.get_signal()
+
+        if min_usr_buf[0][0]-2 < signal[0] < max_usr_buf[0][0]+2:
+            for min_buf, max_buf in zip(min_usr_buf, max_usr_buf):
+                if min_buf[0]-2 < signal[0] < max_buf[0]+2:
+                    is_scope = True
+                elif count > 10:
+                    is_scope = False
+                    break
+                else:
+                    count = count + 1
+
+                signal = data_getter.get_signal()
+        if is_scope:
+            print('Hello World!')
 
 if __name__ == '__main__':
     main()
