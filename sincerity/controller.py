@@ -35,6 +35,14 @@ class DataGetter():
                 input.stop()
                 return buffer
 
+    def process_stream(self):
+        samples = input.read()
+
+        spectrum = get_spectrum(samples)
+        freq = get_peak_frequency(spectrum, self.rate)
+
+        return freq
+
 def get_highest_volume(buf1, buf2, buf3):
 
     def compare(s1, s2):
