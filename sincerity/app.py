@@ -1,8 +1,7 @@
-import pyaudio
-import audioop
-
-from module import *
-from controller import *
+from module import PyAudioData
+from controller import DataGetter
+from controller import get_highest_volume, get_lowest_volume
+from controller import process_signal
 
 
 def main():
@@ -33,11 +32,11 @@ def main():
         max_buf = get_highest_volume(buf1, buf2, buf3)
         min_buf = get_lowest_volume(buf1, buf2, buf3)
 
-        for b in max_buf:
-            max_log.write(' '.join(str(e) for e in b) + '\n')
+        for ele in max_buf:
+            max_log.write(' '.join(str(e) for e in ele) + '\n')
 
-        for b in min_buf:
-            min_log.write(' '.join(str(e) for e in b) + '\n')
+        for ele in min_buf:
+            min_log.write(' '.join(str(e) for e in ele) + '\n')
 
         print('Saving complelete!')
 
@@ -46,33 +45,52 @@ def main():
         print('Set sound data from files')
         for line in max_log.readlines():
             strip_line = line.strip()
-            max_usr_buf.append(strip_line.split(' '))
+            max_usr_buf.append(tuple(strip_line.split(' ')))
 
         for line in min_log.readlines():
             strip_line = line.strip()
-            min_usr_buf.append(strip_line.split(' '))
+            min_usr_buf.append(tuple(strip_line.split(' ')))
 
         print(min_usr_buf)
 
     try:
-        max_log=open('max_buffer.log', 'r')
-        min_log=open('min_buffer.log', 'r')
+        max_log = open('max_buffer.log', 'r')
+        min_log = open('min_buffer.log', 'r')
         print('open complete!')
 
     except IOError:
-        max_log=open('max_buffer.log', 'w')
-        min_log=open('min_buffer.log', 'w')
+        max_log = open('max_buffer.log', 'w')
+        min_log = open('min_buffer.log', 'w')
 
         get_data()
 
         max_log.close()
         min_log.close()
-        max_log=open('max_buffer.log', 'r')
-        min_log=open('min_buffer.log', 'r')
+        max_log = open('max_buffer.log', 'r')
+        min_log = open('min_buffer.log', 'r')
 
     set_data()
     max_log.close()
     min_log.close()
+
+    while(True):
+        is_scope = False
+        signal = data_getter.process_stream()
+        if signal[1] < PIVOT_VOLUME:
+            continue
+
+        for min_signal, max_signal in zip(min_usr_buf, max_usr_buf):
+            if min_signal < signal < max_signal:
+                is_scope = True
+            else:
+                is_scope = False
+                break
+
+            signal = data_getter.process_stream()
+
+        if is_scope:
+            print('data is in the scope!')
+
 
 if __name__ == '__main__':
     main()
