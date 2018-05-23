@@ -16,13 +16,13 @@ class DataGetter():
         self.channels=audio_data.channels
         self.rate=audio_data.rate
         self.chunk=audio_data.chunk
+        self.input = PyAudioInput(audio_data)
 
     def get_signal_buffer(self, end_gap):
-        input = PyAudioInput(self.audio_data)
         start_time = time.time()
         buffer = []
         while(True):
-            samples = input.read()
+            samples = self.input.read()
             if not len(samples):
                 continue
 
@@ -32,8 +32,16 @@ class DataGetter():
             now = time.time()
             buffer.append(freq)
             if now - start_time > end_gap:
-                input.stop()
                 return buffer
+
+    def get_signal(self):
+        samples = self.input.read()
+        if not len(samples):
+            return (0, 0)
+
+        spectrum = get_spectrum(samples)
+        freq = get_peak_frequency(spectrum, self.rate)
+        return freq
 
 def get_highest_prequency(buf1, buf2, buf3):
 
