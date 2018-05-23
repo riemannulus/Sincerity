@@ -30,8 +30,8 @@ def main():
 
         print('processing completed!')
 
-        max_buf = get_highest_volume(buf1, buf2, buf3)
-        min_buf = get_lowest_volume(buf1, buf2, buf3)
+        max_buf = get_highest_prequency(buf1, buf2, buf3)
+        min_buf = get_lowest_prequency(buf1, buf2, buf3)
 
         for b in max_buf:
             max_log.write(' '.join(str(e) for e in b) + '\n')
