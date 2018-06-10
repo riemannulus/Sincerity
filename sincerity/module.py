@@ -7,6 +7,7 @@ class PyAudioInput():
 
     def __init__(self, pyaudiodata):
         self.p = pyaudiodata.p
+        self.chunk_size = pyaudiodata.chunk
         self.stream = self.p.open(
             format=pyaudiodata.format,
             channels=pyaudiodata.channels,
@@ -15,9 +16,9 @@ class PyAudioInput():
             frames_per_buffer=pyaudiodata.chunk)
 
     def read(self):
-        data = self.stream.read(1024)
+        data = self.stream.read(self.chunk_size)
         samples = [audioop.getsample(data, 2, n)
-                   for n in range(0, 1024)]
+                   for n in range(0, self.chunk_size)]
         return samples
 
     def stop(self):
