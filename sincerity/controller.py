@@ -19,6 +19,8 @@ class DataGetter():
         self.input = PyAudioInput(audio_data)
 
     def get_signal_buffer(self, end_gap):
+        if self.input.is_stopped():
+            self.input.start_stream()
         start_time = time.time()
         buffer = []
         while(True):
@@ -32,9 +34,12 @@ class DataGetter():
             now = time.time()
             buffer.append(freq)
             if now - start_time > end_gap:
+                self.input.stop_stream()
                 return buffer
 
     def get_signal(self):
+        if self.input.is_stopped():
+            self.input.start_stream()
         samples = self.input.read()
         if not len(samples):
             return (0, 0)
