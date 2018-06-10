@@ -21,9 +21,15 @@ class PyAudioInput():
                    for n in range(0, self.chunk_size)]
         return samples
 
-    def stop(self):
+    def stop_stream(self):
         self.stream.stop_stream()
-        self.stream.close()
+
+    def is_stopped(self):
+        return self.stream.is_stopped()
+
+    def start_stream(self):
+        self.stream.start_stream()
+
 
 class PyAudioData():
 
